@@ -1,18 +1,18 @@
 name: Hello world workflow
-on: 
-  push:
-  workflow_dispatch:
+on: push
 jobs:
-  my-job:
+  Build:
     runs-on: ubuntu-latest
+    container: gradle:6-jdk11
     steps:
-      - run: |
-          echo "🎉 The job was triggered by event: ${{ github.event_name }}"
-          echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ."
-
-      - uses: actions/checkout@v4
-
-      - name: List files in the repository
-        run: |
-          echo "The repository ${{ github.repository }} contains the following files:"
-          tree
+      - name: Clone-down
+        uses: actions/checkout@v4       
+      - name: Build application
+        run: chmod +x ci/build-app.sh && ci/build-app.sh
+      - name: Test
+        run: chmod +x ci/unit-test-app.sh && ci/unit-test-app.sh
+      - name: Upload Repo
+        uses: actions/upload-artifact@v3
+        with: 
+          name: code
+          path: .
